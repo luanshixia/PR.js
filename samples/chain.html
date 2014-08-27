@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Chain</title>
+</head>
+<body>
+	<canvas id="theCanvas" width="640" height="360"></canvas>
+	<script type="text/javascript" src="../src/PR.js"></script>
+	<script type="text/javascript">
+		/**
+		 * Chain. 
+		 * 
+		 * One mass is attached to the mouse position and the other 
+		 * is attached the position of the other mass. The gravity
+		 * in the environment pulls down on both. 
+		 */
+
+		function ChainDemo() {
+			var s1, s2;
+			var gravity = 9.0;
+			var mass = 2.0;
+			var width = 640, height = 360;
+
+			ChainDemo.prototype.setup = function () {
+				PR.size(width, height);
+				PR.fill(255, 0.5);
+				// Inputs: x, y, mass, gravity
+				s1 = new Spring2D(width/2, height/2, mass, gravity);
+				s2 = new Spring2D(width/2, height/2, mass, gravity);
+			}
+
+			ChainDemo.prototype.draw = function () {
+				PR.background(0, 0, 0);
+				s1.update(PR.mouseX, PR.mouseY);
+				s1.display(PR.mouseX, PR.mouseY);
+				s2.update(s1.x, s1.y);
+				s2.display(s1.x, s1.y);
+			}
+		}
+
+		function Spring2D(x, y, m, g) {
+			var vx = 0, vy = 0; // The x- and y-axis velocities
+			var radius = 30;
+			var stiffness = 0.2;
+			var damping = 0.7;
+			
+			this.x = x;
+			this.y = y;
+			this.mass = m;
+			this.gravity = g;
+
+			Spring2D.prototype.update = function (targetX, targetY) {
+				var forceX = (targetX - this.x) * stiffness;
+				var ax = forceX / this.mass;
+				vx = damping * (vx + ax);
+				this.x += vx;
+				var forceY = (targetY - this.y) * stiffness;
+				forceY += this.gravity;
+				var ay = forceY / this.mass;
+				vy = damping * (vy + ay);
+				this.y += vy;
+			};
+
+			Spring2D.prototype.display = function (nx, ny) {
+				PR.noStroke();
+				PR.circle(this.x, this.y, radius);
+				PR.stroke(255);
+				PR.line(this.x, this.y, nx, ny);
+			};
+		}
+
+		PR.launch("theCanvas", new ChainDemo());
+
+	</script>
+</body>
+</html>

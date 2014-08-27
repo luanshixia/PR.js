@@ -1,0 +1,113 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Bubbles</title>
+    <style type="text/css">
+        #canvas 
+        {
+            border: 1px solid gray;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="canvas" width="400" height="400">
+    </canvas>
+    <script type="text/javascript" src="../src/PR.js"></script>
+    <script type="text/javascript">
+
+    	var Bubbles = {
+		    width: 400,
+		    height: 400,
+		    numBalls: 20,
+		    spring: 0.05,
+		    gravity: 0.15,
+		    modular: 80,
+		    time: null,
+		    balls: [],
+		    setup: function () {
+		        PR.size(this.width, this.height);
+		        PR.noStroke();
+		        PR.smooth();
+		        for (var i = 0; i < this.numBalls; i++) {
+		            this.balls[i] = new Ball(PR.random(0, this.width), PR.random(0, this.height), PR.random(this.modular / 2, this.modular), i, this.balls);
+		        }
+		        this.time = new Date();
+		    },
+		    draw: function () {
+		        PR.background(255, 255, 0);
+		        PR.fill(0, 0, 0, 0.8);
+		        for (var i = 0; i < this.numBalls; i++) {
+		            var ball = this.balls[i];
+		            ball.collide();
+		            ball.move();
+		            PR.circle(ball.x, ball.y, ball.diameter / 2);
+		        }
+		        var time = new Date();
+		        var elapsed = time - this.time;
+		        var fps = 1000 / elapsed;
+		        PR.text("FPS: " + fps.toFixed(2), 20, 20);
+		        this.time = time;
+		    }
+		};
+
+		var Ball = function (x, y, diameter, id, others) {
+		    this.vx = 0;
+		    this.vy = 0;
+		    this.x = x;
+		    this.y = y;
+		    this.diameter = diameter;
+		    this.id = id;
+		    this.others = others;
+		};
+
+		Ball.prototype.collide = function () {
+		    var others = this.others;
+		    for (var i = this.id + 1; i < Bubbles.numBalls; i++) {
+		        var dx = others[i].x - this.x;
+		        var dy = others[i].y - this.y;
+		        var distance = Math.sqrt(dx * dx + dy * dy);
+		        var minDist = others[i].diameter / 2 + this.diameter / 2;
+		        if (distance < minDist) {
+		            var angle = Math.atan2(dy, dx);
+		            var targetX = this.x + Math.cos(angle) * minDist;
+		            var targetY = this.y + Math.sin(angle) * minDist;
+		            var ax = (targetX - others[i].x) * Bubbles.spring;
+		            var ay = (targetY - others[i].y) * Bubbles.spring;
+		            this.vx -= ax;
+		            this.vy -= ay;
+		            others[i].vx += ax;
+		            others[i].vy += ay;
+		        }
+		    }
+		};
+
+		Ball.prototype.move = function () {
+		    var width = Bubbles.width;
+		    var height = Bubbles.height;
+		    var diameter = this.diameter;
+
+		    this.vy += Bubbles.gravity;
+		    this.x += this.vx;
+		    this.y += this.vy;
+
+		    if (this.x + diameter / 2 > width) {
+		        this.x = width - diameter / 2;
+		        this.vx *= -0.9;
+		    } else if (this.x - diameter / 2 < 0) {
+		        this.x = diameter / 2;
+		        this.vx *= -0.9;
+		    }
+		    if (this.y + diameter / 2 > height) {
+		        this.y = height - diameter / 2;
+		        this.vy *= -0.9;
+		    } else if (this.y - diameter / 2 < 0) {
+		        this.y = diameter / 2;
+		        this.vy *= -0.9;
+		    }
+		};
+
+		PR.launch("canvas", Bubbles);
+		
+    </script>
+</body>
+</html>
