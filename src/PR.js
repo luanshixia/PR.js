@@ -167,13 +167,13 @@
         };
 
         PVector.random2D = function () {
-            var theta = this.random(0, Math.PI * 2);
+            var theta = PR.random(0, Math.PI * 2);
             return PVector.fromAngle(theta);
         };
 
         PVector.random3D = function () {
-            var theta = this.random(0, Math.PI * 2),
-                phi = this.random(-Math.PI / 2, Math.PI / 2),
+            var theta = PR.random(0, Math.PI * 2),
+                phi = PR.random(-Math.PI / 2, Math.PI / 2),
                 unit = new PVector(1, 0),
                 xy = unit.rotate(theta),
                 z = unit.rotate(phi);
