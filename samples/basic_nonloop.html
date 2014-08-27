@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Basic Non-Loop Application</title>
+	<style type="text/css">
+
+		#theCanvas {
+			background: orange;
+		}
+	</style>
+</head>
+<body>
+<canvas id="theCanvas" width="800" height="600"></canvas>
+<script type="text/javascript" src="../src/PR.js"></script>
+<script type="text/javascript">
+	var canvas = document.getElementById("theCanvas"),
+		width = canvas.width, height = canvas.height,
+		Button = (function () {
+
+			function Button (x, y, r, c) {
+				this.x = x;
+				this.y = y;
+				this.r = r;
+				this.c = c;
+
+				this.c0 = new PColor(200);
+				this.isMouseOver = false;
+			}
+
+			Button.prototype.draw = function () {
+				var c = this.isMouseOver ? this.c : this.c0;
+				PR.fill(c.red, c.green, c.blue, c.alpha);
+				PR.circle(this.x, this.y, this.r);
+			};
+
+			Button.prototype.isPointIn = function (x, y) {
+				var x0 = this.x, y0 = this.y,
+					v = new PVector(x - x0, y - y0);
+				return v.mag() <= this.r;
+			};
+
+			return Button;
+		})(),
+		proj = new PRProject(width, height);
+
+	proj.setup = function () {
+		PR.noStroke();
+		proj.buttons = [];
+		proj.buttons.push(new Button(200, 200, 100, new PColor(255, 0, 0)));
+		proj.buttons.push(new Button(400, 200, 100, new PColor(255, 255, 0)));
+	};
+
+	proj.draw = function () {
+		PR.clear();
+		proj.buttons.forEach(function (b) {
+			b.draw();
+		});
+		PR.fill(0);
+		PR.text(PR.frameCount.toString(), 30, 30);
+		PR.frameCount++;
+	};
+
+	proj.mouseMove = function (e) {		
+		proj.buttons.forEach(function (b) {
+			b.isMouseOver = b.isPointIn(PR.mouseX, PR.mouseY);
+		});
+		proj.draw();
+	};
+
+	PR.run("theCanvas", proj);
+</script>
+</body>
+</html>
