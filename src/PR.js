@@ -152,8 +152,8 @@
 
         PVector.prototype.rotate = function (theta) {
             // this is 2D only.
-            var x = this.x * Math.cos(theta) + this.y * Math.sin(theta),
-                y = -this.x * Math.sin(theta) + this.y * Math.cos(theta),
+            var x = this.x * Math.cos(theta) - this.y * Math.sin(theta),
+                y = this.x * Math.sin(theta) + this.y * Math.cos(theta),
                 z = this.z;
             return new PVector(x, y, z);
         };
