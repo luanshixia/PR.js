@@ -1,11 +1,11 @@
 // Internal.js
 
-export function hex(c) {
+export function hex(c: number) {
   const h = c.toString(16);
   return h.length === 1 ? `0${h}` : h;
 }
 
-export function extractRgba(args) {
+export function extractRgba(args: number[]) {
   let [r, g, b, a] = args;
   if (args.length === 3) {
     a = 1;

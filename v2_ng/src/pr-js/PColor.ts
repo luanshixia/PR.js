@@ -3,7 +3,13 @@
 import { extractRgba } from './Internal';
 
 export default class PColor {
-  constructor(...args) {
+
+  red: number;
+  green: number;
+  blue: number;
+  alpha: number;
+
+  constructor(...args: number[]) {
     const [r, g, b, a] = extractRgba(args);
 
     this.red = r;

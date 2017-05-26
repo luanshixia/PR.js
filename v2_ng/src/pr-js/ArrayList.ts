@@ -21,7 +21,7 @@ export default class ArrayList extends Array {
     this.length = 0;
   }
 
-  removeAt(i) {
+  removeAt(i: number) {
     this.splice(i, 1);
   }
 
@@ -34,11 +34,11 @@ export default class ArrayList extends Array {
     return this.length;
   }
 
-  get(i) {
+  get(i: number) {
     return this[i];
   }
 
-  set(i, item) {
+  set(i: number, item) {
     this[i] = item;
   }
 }
