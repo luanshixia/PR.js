@@ -1,5 +1,7 @@
 // Utils.js
 
+import { hex } from './Internal';
+
 export function radians(angle) {
   return (angle / 180) * Math.PI;
 }
@@ -9,20 +11,15 @@ export function random(min, max) {
   return min + (rand * (max - min));
 }
 
-function _hex(c) {
-  const hex = c.toString(16);
-  return hex.length === 1 ? ('0' + hex) : hex;
-}
-
 export function rgbaToHex(r, g, b, a) {
   if (a > 0 && a <= 1) {
     a = parseInt((a * 255).toFixed(0));
   }
-  return '#' + _hex(a) + _hex(r) + _hex(g) + _hex(b);
+  return '#' + hex(a) + hex(r) + hex(g) + hex(b);
 }
 
 export function rgbToHex(r, g, b) {
-  return '#' + _hex(r) + _hex(g) + _hex(b);
+  return '#' + hex(r) + hex(g) + hex(b);
 }
 
 export function rgba(r, g, b, a) {

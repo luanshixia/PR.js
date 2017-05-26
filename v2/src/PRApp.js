@@ -2,6 +2,7 @@
 
 import PVector from './PVector';
 import * as Utils from './Utils';
+import { extractRgba } from './Internal';
 
 export default class PRApp {
 
@@ -62,25 +63,13 @@ export default class PRApp {
     this.context.restore();
   }
 
-  _extractRgba(args) {
-    let [r, g, b, a] = args;
-    if (args.length === 3) {
-      a = 1;
-    } else if (args.length === 2) {
-      a = g; g = r; b = r;
-    } else if (args.length === 1) {
-      a = 1; g = r; b = r;
-    }
-    return [r, g, b, a];
-  }
-
   fill(...args) {
-    const [r, g, b, a] = this._extractRgba(args);
+    const [r, g, b, a] = extractRgba(args);
     this.context.fillStyle = Utils.rgba(r, g, b, a);
   }
 
   stroke(...args) {
-    const [r, g, b, a] = this._extractRgba(args);
+    const [r, g, b, a] = extractRgba(args);
     this.context.strokeStyle = Utils.rgba(r, g, b, a);
   }
 
@@ -228,6 +217,7 @@ export default class PRApp {
     canvas.addEventListener('keyup', () => {
       proj.key = null;
     });
+    canvas.addEventListener('mousemove', proj.mouseMove); // for non-loop apps
     canvas.addEventListener('mousedown', proj.mousePressed);
     canvas.addEventListener('mouseup', proj.mouseReleased);
     canvas.addEventListener('keypress', proj.keyPressed);
