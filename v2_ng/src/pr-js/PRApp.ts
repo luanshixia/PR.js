@@ -239,10 +239,10 @@ export default class PRApp {
     canvas.addEventListener('keyup', () => {
       proj.key = null;
     });
-    canvas.addEventListener('mousemove', proj.mouseMove); // for non-loop apps
-    canvas.addEventListener('mousedown', proj.mousePressed);
-    canvas.addEventListener('mouseup', proj.mouseReleased);
-    canvas.addEventListener('keypress', proj.keyPressed);
+    canvas.addEventListener('mousemove', proj.mouseMove.bind(proj)); // for non-loop apps
+    canvas.addEventListener('mousedown', proj.mousePressed.bind(proj));
+    canvas.addEventListener('mouseup', proj.mouseReleased.bind(proj));
+    canvas.addEventListener('keypress', proj.keyPressed.bind(proj));
 
     // loop
     proj.setup();
@@ -253,6 +253,8 @@ export default class PRApp {
     }
     if (loop) {
       render();
+    } else {
+      proj.draw();
     }
   }
 }
