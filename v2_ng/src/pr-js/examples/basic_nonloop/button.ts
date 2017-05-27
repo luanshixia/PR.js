@@ -4,6 +4,14 @@ import PColor from '../../PColor';
 import PVector from '../../PVector';
 
 export default class Button {
+
+  x: number;
+  y: number;
+  r: number;
+  c: PColor;
+  c0: PColor
+  isMouseOver: boolean;
+
   constructor(x, y, r, c) {
     this.x = x;
     this.y = y;

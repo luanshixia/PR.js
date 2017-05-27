@@ -6,6 +6,24 @@ import { extractRgba } from './Internal';
 
 export default class PRApp {
 
+  width: number;
+  height: number;
+  context: CanvasRenderingContext2D;
+  frameRate: number;
+  frameCount: number;
+  mouseX: number;
+  mouseY: number;
+  pmouseX: number;
+  pmouseY: number;
+  key: string;
+
+  _translateX: number;
+  _translateY: number;
+  _rotateAngle: number;
+  _scaleX: number;
+  _scaleY: number;
+  _vertices: PVector[];
+
   constructor() {
     this.width = 300;
     this.height = 300;
@@ -42,7 +60,7 @@ export default class PRApp {
   smooth() {
     this.context.webkitImageSmoothingEnabled = true;
     this.context.mozImageSmoothingEnabled = true;
-    this.context.msImageSmoothingEnabled = true;
+    this.context.imageSmoothingEnabled = true;
   }
 
   clear() {
@@ -175,6 +193,10 @@ export default class PRApp {
   }
 
   mouseReleased() {
+
+  }
+
+  mouseMove() {
 
   }
 

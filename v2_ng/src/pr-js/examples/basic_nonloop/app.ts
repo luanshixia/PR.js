@@ -5,6 +5,9 @@ import PColor from '../../PColor';
 import PRApp from '../../PRApp';
 
 export default class App extends PRApp {
+
+  buttons: Button[];
+
   setup() {
     this.noStroke();
     this.buttons = [];
