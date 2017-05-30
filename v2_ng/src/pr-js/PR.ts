@@ -4,6 +4,8 @@ import PVector from './PVector';
 import * as Utils from './Utils';
 import { extractRgba, currentContext, canvasContext } from './Internal';
 
+// Setup
+
 export function size(w: number, h: number) {
   currentContext().width = w;
   currentContext().height = h;
@@ -144,4 +146,15 @@ export function get(x, y, w, h) {
 
 export function set(x, y, c) {
 
+}
+
+// Utils
+
+export function radians(angle: number) {
+  return (angle / 180) * Math.PI;
+}
+
+export function random(min: number, max: number) {
+  const rand = Math.random();
+  return min + (rand * (max - min));
 }

@@ -5,11 +5,6 @@ import PRContext from './PRContext';
 const CURRENT_CONTEXT_KEY = '__pr_current_context__';
 const CONTEXT_DICT_KEY = '__pr_context_dict__';
 
-export function hex(c: number) {
-  const h = c.toString(16);
-  return h.length === 1 ? `0${h}` : h;
-}
-
 export function extractRgba(args: number[]) {
   let [r, g, b, a] = args;
   if (args.length === 3) {

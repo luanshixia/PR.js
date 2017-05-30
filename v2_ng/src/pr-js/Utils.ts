@@ -1,14 +1,8 @@
 // Utils.js
 
-import { hex } from './Internal';
-
-export function radians(angle: number) {
-  return (angle / 180) * Math.PI;
-}
-
-export function random(min: number, max: number) {
-  const rand = Math.random();
-  return min + (rand * (max - min));
+export function hex(c: number) {
+  const h = c.toString(16);
+  return h.length === 1 ? `0${h}` : h;
 }
 
 export function rgbaToHex(r: number, g: number, b: number, a: number) {
@@ -30,5 +24,5 @@ export function rgba(r: number, g: number, b: number, a: number) {
 }
 
 export function rgb(r: number, g: number, b: number) {
-  return `rgba(${r},${g},${b})`;
+  return `rgb(${r},${g},${b})`;
 }

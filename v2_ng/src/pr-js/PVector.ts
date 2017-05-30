@@ -1,6 +1,6 @@
 // PVector.js
 
-import * as Utils from './Utils';
+import { random } from './PR';
 
 export default class PVector {
 
@@ -94,13 +94,13 @@ export default class PVector {
   }
 
   static random2D() {
-    const theta = Utils.random(0, Math.PI * 2);
+    const theta = random(0, Math.PI * 2);
     return PVector.fromAngle(theta);
   }
 
   static random3D() {
-    const theta = Utils.random(0, Math.PI * 2);
-    const phi = Utils.random(-Math.PI / 2, Math.PI / 2);
+    const theta = random(0, Math.PI * 2);
+    const phi = random(-Math.PI / 2, Math.PI / 2);
     const unit = new PVector(1, 0);
     const xy = unit.rotate(theta);
     const z = unit.rotate(phi);
