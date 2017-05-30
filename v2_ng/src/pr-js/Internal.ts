@@ -43,3 +43,10 @@ export function getBase62ShortID(length: number) {
   }
   return chars.join('');
 }
+
+export function ensureContext(action: () => void, context: PRContext) {
+  return () => {
+    currentContext(context);
+    action();
+  };
+}
