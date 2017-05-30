@@ -4,7 +4,7 @@ import PVector from './PVector';
 import * as Utils from './Utils';
 import { extractRgba, currentContext, canvasContext } from './Internal';
 
-export function size(w, h) {
+export function size(w: number, h: number) {
   currentContext().width = w;
   currentContext().height = h;
 }
@@ -30,7 +30,7 @@ export function clear() {
   canvasContext().clearRect(0, 0, currentContext().width, currentContext().height);
 }
 
-export function background(r, g = r, b = r) {
+export function background(r: number, g = r, b = r) {
   translate(0, 0);
   rotate(0);
   scale(1, 1);
@@ -41,36 +41,36 @@ export function background(r, g = r, b = r) {
   canvasContext().restore();
 }
 
-export function fill(...args) {
+export function fill(...args: number[]) {
   const [r, g, b, a] = extractRgba(args);
   canvasContext().fillStyle = Utils.rgba(r, g, b, a);
 }
 
-export function stroke(...args) {
+export function stroke(...args: number[]) {
   const [r, g, b, a] = extractRgba(args);
   canvasContext().strokeStyle = Utils.rgba(r, g, b, a);
 }
 
-export function strokeWeight(w) {
+export function strokeWeight(w: number) {
   canvasContext().lineWidth = w;
 }
 
-export function textFont(which, size) {
+export function textFont(which: string, size: number) {
   canvasContext().font = `${size}px ${which}`;
 }
 
-export function translate(x, y) {
+export function translate(x: number, y: number) {
   canvasContext().translate(x - currentContext()._translateX, y - currentContext()._translateY);
   currentContext()._translateX = x;
   currentContext()._translateY = y;
 }
 
-export function rotate(angle) {
+export function rotate(angle: number) {
   canvasContext().rotate(angle - currentContext()._rotateAngle);
   currentContext()._rotateAngle = angle;
 }
 
-export function scale(x, y) {
+export function scale(x: number, y: number) {
   canvasContext().scale(x / currentContext()._scaleX, y / currentContext()._scaleY);
   currentContext()._scaleX = x;
   currentContext()._scaleY = y;
@@ -78,7 +78,7 @@ export function scale(x, y) {
 
 // Draw
 
-export function circle(x, y, r) {
+export function circle(x: number, y: number, r: number) {
   canvasContext().beginPath();
   canvasContext().arc(x, y, r, 0, 2 * Math.PI, false);
   canvasContext().closePath();
@@ -86,19 +86,19 @@ export function circle(x, y, r) {
   canvasContext().stroke();
 }
 
-export function rect(x, y, w, h) {
+export function rect(x: number, y: number, w: number, h: number) {
   canvasContext().fillRect(x, y, w, h);
   canvasContext().strokeRect(x, y, w, h);
 }
 
-export function line(x1, y1, x2, y2) {
+export function line(x1: number, y1: number, x2: number, y2: number) {
   canvasContext().beginPath();
   canvasContext().moveTo(x1, y1);
   canvasContext().lineTo(x2, y2);
   canvasContext().stroke();
 }
 
-export function lines(vs, close) {
+export function lines(vs: PVector[], close: boolean) {
   canvasContext().beginPath();
   canvasContext().moveTo(vs[0].x, vs[0].y);
   for (let i = 1; i < vs.length; i += 1) {
@@ -111,7 +111,7 @@ export function lines(vs, close) {
   canvasContext().stroke();
 }
 
-export function text(str, x, y) {
+export function text(str: string, x: number, y: number) {
   canvasContext().fillText(str, x, y);
   canvasContext().strokeText(str, x, y);
 }
@@ -120,7 +120,7 @@ export function beginShape() {
   currentContext()._vertices = [];
 }
 
-export function vertex(x, y) {
+export function vertex(x: number, y: number) {
   currentContext()._vertices.push(new PVector(x, y));
 }
 
