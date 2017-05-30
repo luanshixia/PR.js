@@ -3,33 +3,32 @@
 import Button from './button';
 import PColor from '../../PColor';
 import PRApp from '../../PRApp';
+import { noStroke, clear, fill, text } from '../../PR';
 
 export default class App extends PRApp {
 
   buttons: Button[];
 
   setup() {
-    this.noStroke();
+    noStroke();
     this.buttons = [];
     this.buttons.push(new Button(200, 200, 100, new PColor(255, 0, 0)));
     this.buttons.push(new Button(400, 200, 100, new PColor(255, 255, 0)));
   }
 
   draw() {
-    this.clear();
+    clear();
     this.buttons.forEach((b) => {
-      const c = b.isMouseOver ? b.c : b.c0;
-      this.fill(c.red, c.green, c.blue, c.alpha);
-      this.circle(b.x, b.y, b.r);
+      b.draw();
     });
-    this.fill(0);
-    this.text(this.frameCount.toString(), 30, 30);
-    this.frameCount += 1;
+    fill(0);
+    text(this.context.frameCount.toString(), 30, 30);
+    this.context.frameCount += 1;
   }
 
   mouseMove() {
     this.buttons.forEach((b) => {
-      b.isMouseOver = b.isPointIn(this.mouseX, this.mouseY);
+      b.isMouseOver = b.isPointIn(this.context.mouseX, this.context.mouseY);
     });
     this.draw();
   }

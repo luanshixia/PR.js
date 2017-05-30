@@ -2,6 +2,7 @@
 
 import PColor from '../../PColor';
 import PVector from '../../PVector';
+import { fill, circle } from '../../PR';
 
 export default class Button {
 
@@ -27,5 +28,11 @@ export default class Button {
     const y0 = this.y;
     const v = new PVector(x - x0, y - y0);
     return v.mag() <= this.r;
+  }
+
+  draw() {
+    const c = this.isMouseOver ? this.c : this.c0;
+    fill(c.red, c.green, c.blue, c.alpha);
+    circle(this.x, this.y, this.r);
   }
 }
