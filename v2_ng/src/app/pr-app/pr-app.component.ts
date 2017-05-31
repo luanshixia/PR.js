@@ -9,7 +9,7 @@ import Examples from '../../pr-js/examples/index';
 })
 export class PrAppComponent implements OnInit {
 
-  @Input() title: string;
+  @Input() caption: string;
   @Input() description: string;
   @Input() canvasWidth: number;
   @Input() canvasHeight: number;
