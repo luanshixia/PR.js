@@ -1,4 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
+import { InputConverter } from '../../utils/InputConverter';
 import Examples from '../../pr-js/examples/index';
 
 @Component({
@@ -11,10 +12,10 @@ export class PrAppComponent implements OnInit {
 
   @Input() caption: string;
   @Input() description: string;
-  @Input() canvasWidth: number;
-  @Input() canvasHeight: number;
+  @Input() @InputConverter() canvasWidth: number = 300;
+  @Input() @InputConverter() canvasHeight: number = 300;
   @Input() example: string;
-  @Input() loop: boolean;
+  @Input() @InputConverter() loop: boolean = true;
   canvasId: string;
 
   constructor(private examples: Examples) {}

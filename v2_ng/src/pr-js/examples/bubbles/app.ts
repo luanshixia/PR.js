@@ -4,8 +4,8 @@ import PRApp from '../../PRApp';
 import { size, noStroke, smooth, random, background, fill, circle, text } from '../../PR';
 
 const Bubbles = {
-  width: 400,
-  height: 400,
+  width: 640,
+  height: 360,
   numBalls: 20,
   spring: 0.05,
   gravity: 0.15,
