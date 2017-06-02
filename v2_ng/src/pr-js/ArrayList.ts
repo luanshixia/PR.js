@@ -3,42 +3,43 @@
 /**
  * The ArrayList class
  */
-export default class ArrayList extends Array {
+export default class ArrayList {
+
+  private _array = [];
+
   /**
    * The constructor of ArrayList
    */
   constructor(...args) {
-    super();
-
-    args.forEach(arg => this.push(arg));
+    args.forEach(arg => this._array.push(arg));
   }
 
   add(item) {
-    this.push(item);
+    this._array.push(item);
   }
 
   clear() {
-    this.length = 0;
+    this._array.length = 0;
   }
 
   removeAt(i: number) {
-    this.splice(i, 1);
+    this._array.splice(i, 1);
   }
 
   remove(item) {
-    const i = this.indexOf(item);
-    this.splice(i, 1);
+    const i = this._array.indexOf(item);
+    this._array.splice(i, 1);
   }
 
   size() {
-    return this.length;
+    return this._array.length;
   }
 
   get(i: number) {
-    return this[i];
+    return this._array[i];
   }
 
   set(i: number, item) {
-    this[i] = item;
+    this._array[i] = item;
   }
 }

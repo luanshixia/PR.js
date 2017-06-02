@@ -127,7 +127,7 @@ export function vertex(x: number, y: number) {
 }
 
 export function endShape() {
-  lines(this._vertices, true);
+  lines(currentContext()._vertices, true);
 }
 
 // Image
