@@ -1,6 +1,8 @@
 // PR.js
 
 import PVector from './PVector';
+import PColor from './PColor';
+import PImage from './PImage';
 import * as Utils from './Utils';
 import { extractRgba, currentContext, canvasContext } from './Internal';
 
@@ -132,20 +134,51 @@ export function endShape() {
 
 // Image
 
-export function loadImage(filename) {
-
+export function loadImage(filename: string) {
+  const img = document.createElement('img');
+  img.src = filename;
+  const canvas = document.createElement('canvas');
+  canvas.width = img.width;
+  canvas.height = img.height;
+  const context = canvas.getContext('2d');
+  context.drawImage(img, 0, 0);
+  const pimage = new PImage();
+  pimage._imageData = context.getImageData(0, 0, img.width, img.height);
+  return pimage;
 }
 
-export function image(img, x, y, w, h) {
-
+export function createImage(width: number, height: number) {
+  const pimage = new PImage();
+  pimage._imageData = canvasContext().createImageData(width, height);
+  return pimage;
 }
 
-export function get(x, y, w, h) {
-
+export function image(img: PImage, x: number, y: number, w?: number, h?: number) {
+  const w1 = w || img._imageData.width;
+  const h1 = h || img._imageData.height;
+  canvasContext().putImageData(img._imageData, 0, 0, x, y, w1, h1);
 }
 
-export function set(x, y, c) {
+export function get(x: number, y: number, w?: number, h?: number) {
+  const pimage = new PImage();
+  const w1 = w || 1;
+  const h1 = h || 1;
+  pimage._imageData = canvasContext().getImageData(x, y, w1, h1);
+  if (!w || !h) {
+    return pimage.get(0, 0);
+  }
+  return pimage;
+}
 
+export function set(x: number, y: number, c: PColor | PImage) {
+  if (c instanceof PImage) {
+    image(c, x, y);
+  } else if (c instanceof PColor) {
+    canvasContext().save();
+    canvasContext().fillStyle = Utils.rgba(c.red, c.green, c.blue, c.alpha);
+    canvasContext().fillRect(x, y, 1, 1);
+    canvasContext().restore();
+  }
 }
 
 // Utils
@@ -157,4 +190,8 @@ export function radians(angle: number) {
 export function random(min: number, max: number) {
   const rand = Math.random();
   return min + (rand * (max - min));
+}
+
+export function color(...args: number[]) {
+  return new PColor(args);
 }

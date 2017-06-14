@@ -2,7 +2,7 @@
 
 import PColor from '../../PColor';
 import PVector from '../../PVector';
-import { fill, circle } from '../../PR';
+import { fill, circle, color } from '../../PR';
 
 export default class Button {
 
@@ -19,7 +19,7 @@ export default class Button {
     this.r = r;
     this.c = c;
 
-    this.c0 = new PColor(200);
+    this.c0 = color(200);
     this.isMouseOver = false;
   }
 

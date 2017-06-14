@@ -1,9 +1,8 @@
 // app.js
 
 import Button from './button';
-import PColor from '../../PColor';
 import PRApp from '../../PRApp';
-import { noStroke, clear, fill, text } from '../../PR';
+import { noStroke, clear, fill, text, color } from '../../PR';
 
 export default class App extends PRApp {
 
@@ -12,8 +11,8 @@ export default class App extends PRApp {
   setup() {
     noStroke();
     this.buttons = [];
-    this.buttons.push(new Button(200, 200, 100, new PColor(255, 0, 0)));
-    this.buttons.push(new Button(400, 200, 100, new PColor(255, 255, 0)));
+    this.buttons.push(new Button(200, 200, 100, color(255, 0, 0)));
+    this.buttons.push(new Button(400, 200, 100, color(255, 255, 0)));
   }
 
   draw() {

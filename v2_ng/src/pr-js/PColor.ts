@@ -9,7 +9,7 @@ export default class PColor {
   blue: number;
   alpha: number;
 
-  constructor(...args: number[]) {
+  constructor(args: number[]) {
     const [r, g, b, a] = extractRgba(args);
 
     this.red = r;
