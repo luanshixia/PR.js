@@ -20,6 +20,8 @@ export default class PRContext {
   _scaleX: number;
   _scaleY: number;
   _vertices: PVector[];
+  _ellipseMode: string;
+  _imageMode: string;
 
   constructor() {
     this.width = 300;

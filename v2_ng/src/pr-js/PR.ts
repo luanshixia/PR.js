@@ -6,6 +6,36 @@ import PImage from './PImage';
 import * as Utils from './Utils';
 import { extractRgba, currentContext, canvasContext } from './Internal';
 
+// Constants
+
+export enum EllipseRectMode {
+  Radius,
+  Center,
+  Corner,
+  Corners
+}
+
+export enum ArcMode {
+  Open,
+  Chord,
+  Pie
+}
+
+export const RADIUS = EllipseRectMode.Radius;
+export const CENTER = EllipseRectMode.Center;
+export const CORNER = EllipseRectMode.Corner;
+export const CORNERS = EllipseRectMode.Corners;
+
+export const OPEN = ArcMode.Open;
+export const CHORD = ArcMode.Chord;
+export const PIE = ArcMode.Pie;
+
+export const PI = Math.PI;
+export const HALF_PI = Math.PI / 2;
+export const QUARTER_PI = Math.PI / 4;
+export const TWO_PI = Math.PI * 2;
+export const TAU = TWO_PI;
+
 // Setup
 
 export function size(w: number, h: number) {
@@ -82,12 +112,36 @@ export function scale(x: number, y: number) {
 
 // Draw
 
+export function arc(x: number, y: number, w: number, h: number, start: number, end: number, mode = OPEN) {
+  canvasContext().beginPath();
+  canvasContext().ellipse(x, y, w, h, 0, start, end, false);
+  if (mode === CHORD) {
+    canvasContext().closePath();
+  } else if (mode === PIE) {
+    canvasContext().lineTo(x, y);
+    canvasContext().closePath();
+  }
+  canvasContext().fill();
+  canvasContext().stroke();
+}
+
+export function ellipse(x: number, y: number, w: number, h: number) {
+  canvasContext().beginPath();
+  canvasContext().ellipse(x, y, w, h, 0, 0, TWO_PI);
+  canvasContext().fill();
+  canvasContext().stroke();
+}
+
 export function circle(x: number, y: number, r: number) {
   canvasContext().beginPath();
-  canvasContext().arc(x, y, r, 0, 2 * Math.PI, false);
+  canvasContext().arc(x, y, r, 0, TWO_PI, false);
   canvasContext().closePath();
   canvasContext().fill();
   canvasContext().stroke();
+}
+
+export function point(x: number, y: number) {
+  canvasContext().strokeRect(x, y, 1, 1);
 }
 
 export function rect(x: number, y: number, w: number, h: number) {
@@ -115,13 +169,30 @@ export function lines(vs: PVector[], close: boolean) {
   canvasContext().stroke();
 }
 
+export function quad(x1, y1, x2, y2, x3, y3, x4, y4) {
+  beginShape();
+  vertex(x1, y1);
+  vertex(x2, y2);
+  vertex(x3, y3);
+  vertex(x4, y4);
+  endShape();
+}
+
+export function triangle(x1, y1, x2, y2, x3, y3) {
+  beginShape();
+  vertex(x1, y1);
+  vertex(x2, y2);
+  vertex(x3, y3);
+  endShape();
+}
+
 export function text(str: string, x: number, y: number) {
   canvasContext().fillText(str, x, y);
   canvasContext().strokeText(str, x, y);
 }
 
 export function beginShape() {
-  currentContext()._vertices = [];
+  currentContext()._vertices.length = 0;
 }
 
 export function vertex(x: number, y: number) {
@@ -184,7 +255,7 @@ export function set(x: number, y: number, c: PColor | PImage) {
 // Utils
 
 export function radians(angle: number) {
-  return (angle / 180) * Math.PI;
+  return (angle / 180) * PI;
 }
 
 export function random(min: number, max: number) {
