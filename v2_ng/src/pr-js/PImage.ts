@@ -7,6 +7,14 @@ export default class PImage {
   _imageData: ImageData;
   _canAccessPixels: boolean;
 
+  get width() {
+    return this._imageData.width;
+  }
+
+  get height() {
+    return this._imageData.height;
+  }
+
   loadPixels() {
     this._canAccessPixels = true;
   }

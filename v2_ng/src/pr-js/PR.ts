@@ -169,7 +169,7 @@ export function lines(vs: PVector[], close: boolean) {
   canvasContext().stroke();
 }
 
-export function quad(x1, y1, x2, y2, x3, y3, x4, y4) {
+export function quad(x1: number, y1: number, x2: number, y2: number, x3: number, y3: number, x4: number, y4: number) {
   beginShape();
   vertex(x1, y1);
   vertex(x2, y2);
@@ -178,7 +178,7 @@ export function quad(x1, y1, x2, y2, x3, y3, x4, y4) {
   endShape();
 }
 
-export function triangle(x1, y1, x2, y2, x3, y3) {
+export function triangle(x1: number, y1: number, x2: number, y2: number, x3: number, y3: number) {
   beginShape();
   vertex(x1, y1);
   vertex(x2, y2);
@@ -225,8 +225,8 @@ export function createImage(width: number, height: number) {
 }
 
 export function image(img: PImage, x: number, y: number, w?: number, h?: number) {
-  const w1 = w || img._imageData.width;
-  const h1 = h || img._imageData.height;
+  const w1 = w || img.width;
+  const h1 = h || img.height;
   canvasContext().putImageData(img._imageData, 0, 0, x, y, w1, h1);
 }
 
@@ -254,13 +254,68 @@ export function set(x: number, y: number, c: PColor | PImage) {
 
 // Utils
 
+export const abs = Math.abs;
+export const floor = Math.floor;
+export const ceil = Math.ceil;
+export const round = Math.round;
+export const pow = Math.pow;
+export const sqrt = Math.sqrt;
+export const log = Math.log;
+export const exp = Math.exp;
+export const min = Math.min;
+export const max = Math.max;
+export const sq = (x: number) => x * x;
+
 export function radians(angle: number) {
   return (angle / 180) * PI;
 }
 
-export function random(min: number, max: number) {
+export function random(a?: number | number[], b?: number) {
   const rand = Math.random();
+  if (a === undefined && b === undefined) {
+    return rand;
+  } else if (a instanceof Array && b === undefined) {
+    const arr = <number[]>a;
+    const i = floor(rand * arr.length);
+    return arr[i];
+  }
+  const min = b === undefined ? 0 : <number>a;
+  const max = b === undefined ? <number>a : b;
   return min + (rand * (max - min));
+}
+
+export function lerp(start: number, stop: number, amt: number) {
+  return start + amt * (stop - start);
+}
+
+export function map(value: number, start1: number, stop1: number, start2: number, stop2: number) {
+  return lerp(start2, stop2, (value - start1) / (stop1 - start1));
+}
+
+export function norm(value: number, start: number, stop: number) {
+  return map(value, start, stop, 0, 1);
+}
+
+export function dist(...args: number[]) {
+  if (args.length < 6) {
+    args[5] = 0;
+    args[4] = args[3];
+    args[3] = args[2];
+    args[2] = 0;
+  }
+  const [x1, y1, z1] = args.slice(0, 3);
+  const v1 = new PVector(x1, y1, z1);
+  const [x2, y2, z2] = args.slice(3, 6);
+  const v2 = new PVector(x2, y2, z2);
+  return v1.dist(v2);
+}
+
+export function mag(x: number, y: number, z = 0) {
+  return dist(x, y, z, 0, 0, 0);
+}
+
+export function constrain(n: number, low: number, high: number) {
+  return n > high ? high : n < low ? low : n;
 }
 
 export function color(...args: number[]) {
