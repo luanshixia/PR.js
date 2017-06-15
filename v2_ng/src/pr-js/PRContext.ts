@@ -1,6 +1,7 @@
 // PRContext.js
 
 import PVector from './PVector';
+import { BoundingMode } from './PR';
 
 export default class PRContext {
   width: number;
@@ -21,8 +22,10 @@ export default class PRContext {
   _scaleY: number;
   _vertices: PVector[];
   _pauseDraw: boolean;
-  _ellipseMode: string;
-  _imageMode: string;
+
+  _ellipseMode: BoundingMode;
+  _rectMode: BoundingMode;
+  _imageMode: BoundingMode;
 
   constructor() {
     this.width = 300;
@@ -42,5 +45,10 @@ export default class PRContext {
     this._scaleX = 1;
     this._scaleY = 1;
     this._vertices = [];
+    this._pauseDraw = false;
+
+    this._ellipseMode = BoundingMode.Radius;
+    this._rectMode = BoundingMode.Corner;
+    this._imageMode = BoundingMode.Corner;
   }
 }

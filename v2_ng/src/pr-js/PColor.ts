@@ -1,6 +1,6 @@
 // PColor.js
 
-import { extractRgba } from './Internal';
+import { extractRGBA } from './Internal';
 
 export default class PColor {
 
@@ -10,7 +10,7 @@ export default class PColor {
   alpha: number;
 
   constructor(args: number[]) {
-    const [r, g, b, a] = extractRgba(args);
+    const [r, g, b, a] = extractRGBA(args);
 
     this.red = r;
     this.green = g;

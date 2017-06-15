@@ -4,7 +4,7 @@ import PVector from './PVector';
 import PColor from './PColor';
 import PImage from './PImage';
 import * as Utils from './Utils';
-import { extractRgba2, currentContext, canvasContext } from './Internal';
+import { extractRGBA2, extractXYWH, currentContext, canvasContext } from './Internal';
 
 // Constants
 
@@ -76,12 +76,12 @@ export function background(r: number, g = r, b = r) {
 }
 
 export function fill(...args: any[]) {
-  const [r, g, b, a] = extractRgba2(args);
+  const [r, g, b, a] = extractRGBA2(args);
   canvasContext().fillStyle = Utils.rgba(r, g, b, a);
 }
 
 export function stroke(...args: any[]) {
-  const [r, g, b, a] = extractRgba2(args);
+  const [r, g, b, a] = extractRGBA2(args);
   canvasContext().strokeStyle = Utils.rgba(r, g, b, a);
 }
 
@@ -110,11 +110,23 @@ export function scale(x: number, y: number) {
   currentContext()._scaleY = y;
 }
 
+export function ellipseMode(mode: BoundingMode) {
+  currentContext()._ellipseMode = mode;
+}
+
+export function rectMode(mode: BoundingMode) {
+  currentContext()._rectMode = mode;
+}
+
+export function imageMode(mode: BoundingMode) {
+  currentContext()._imageMode = mode;
+}
+
 // Draw
 
 export function arc(x: number, y: number, w: number, h: number, start: number, end: number, mode = OPEN) {
   canvasContext().beginPath();
-  canvasContext().ellipse(x, y, w, h, 0, start, end, false);
+  canvasContext().ellipse(x, y, w / 2, h / 2, 0, start, end, false);
   if (mode === CHORD) {
     canvasContext().closePath();
   } else if (mode === PIE) {
@@ -125,28 +137,26 @@ export function arc(x: number, y: number, w: number, h: number, start: number, e
   canvasContext().stroke();
 }
 
-export function ellipse(x: number, y: number, w: number, h: number) {
+export function ellipse(...args: number[]) {
+  const b = extractXYWH(args, currentContext()._ellipseMode);
   canvasContext().beginPath();
-  canvasContext().ellipse(x, y, w, h, 0, 0, TWO_PI);
+  canvasContext().ellipse(b.center.x, b.center.y, b.radiusX, b.radiusY, 0, 0, TWO_PI);
   canvasContext().fill();
   canvasContext().stroke();
 }
 
 export function circle(x: number, y: number, r: number) {
-  canvasContext().beginPath();
-  canvasContext().arc(x, y, r, 0, TWO_PI, false);
-  canvasContext().closePath();
-  canvasContext().fill();
-  canvasContext().stroke();
+  ellipse(x, y, r);
 }
 
 export function point(x: number, y: number) {
   canvasContext().strokeRect(x, y, 1, 1);
 }
 
-export function rect(x: number, y: number, w: number, h: number) {
-  canvasContext().fillRect(x, y, w, h);
-  canvasContext().strokeRect(x, y, w, h);
+export function rect(...args: number[]) {
+  const b = extractXYWH(args, currentContext()._rectMode);
+  canvasContext().fillRect(b.topLeft.x, b.topLeft.y, b.width, b.height);
+  canvasContext().strokeRect(b.topLeft.x, b.topLeft.y, b.width, b.height);
 }
 
 export function line(x1: number, y1: number, x2: number, y2: number) {
@@ -243,7 +253,8 @@ export function createImage(width: number, height: number) {
 export function image(img: PImage, x: number, y: number, w?: number, h?: number) {
   const w1 = w || img.width;
   const h1 = h || img.height;
-  canvasContext().putImageData(img._imageData, 0, 0, x, y, w1, h1);
+  const b = extractXYWH([x, y, w1, h1], currentContext()._imageMode);
+  canvasContext().putImageData(img._imageData, 0, 0, b.topLeft.x, b.topLeft.y, b.width, b.height);
 }
 
 export function get(x: number, y: number, w?: number, h?: number) {
