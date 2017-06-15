@@ -20,6 +20,7 @@ export default class PRContext {
   _scaleX: number;
   _scaleY: number;
   _vertices: PVector[];
+  _pauseDraw: boolean;
   _ellipseMode: string;
   _imageMode: string;
 

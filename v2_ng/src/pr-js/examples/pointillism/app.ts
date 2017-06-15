@@ -15,7 +15,6 @@ export default class App extends PRApp {
   img: PImage;
   smallPoint: number;
   largePoint: number;
-  ready: boolean;
 
   setup() {
     loadImage('assets/moonwalk.png').then(pimage => {
@@ -26,14 +25,10 @@ export default class App extends PRApp {
       noStroke();
       background(255);
       this.img.loadPixels();
-      this.ready = true;
     });
   }
 
   draw() {
-    if (!this.ready) {
-      return;
-    }
     const pointillize = map(this.context.mouseX, 0, this.context.width, this.smallPoint, this.largePoint);
     const x = floor(random(this.img.width));
     const y = floor(random(this.img.height));

@@ -206,19 +206,30 @@ export function endShape() {
 // Image
 
 export function loadImage(filename: string) {
+  const prContext = currentContext();
+  prContext._pauseDraw = true;
+
   const pimage = new PImage();
   const img = document.createElement('img');
   const canvas = document.createElement('canvas');
   const context = canvas.getContext('2d');
+
   const promise = new Promise<PImage>((resolve, reject) => {
     img.onload = () => {
       canvas.width = img.width;
       canvas.height = img.height;
       context.drawImage(img, 0, 0);
       pimage._imageData = context.getImageData(0, 0, img.width, img.height);
+
+      const tmpContext = currentContext();
+      currentContext(prContext);
       resolve(pimage);
+      currentContext(tmpContext);
+
+      prContext._pauseDraw = false; // NOTE: currentContext() will return wrong result here
     };
   });
+
   img.src = filename;
   return promise;
 }

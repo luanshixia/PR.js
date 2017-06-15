@@ -80,8 +80,10 @@ export default class PRApp {
     // loop
     proj.setup();
     function render() {
-      Internal.ensureContext(proj.draw.bind(proj), context)();
-      context.frameCount += 1;
+      if (!context._pauseDraw) {
+        Internal.ensureContext(proj.draw.bind(proj), context)();
+        context.frameCount += 1;
+      }
       setTimeout(render, interval);
     }
     if (loop) {
