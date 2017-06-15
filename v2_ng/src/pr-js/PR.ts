@@ -146,7 +146,10 @@ export function ellipse(...args: number[]) {
 }
 
 export function circle(x: number, y: number, r: number) {
-  ellipse(x, y, r);
+  canvasContext().beginPath();
+  canvasContext().arc(x, y, r, 0, TWO_PI);
+  canvasContext().fill();
+  canvasContext().stroke();
 }
 
 export function point(x: number, y: number) {
