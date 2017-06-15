@@ -8,11 +8,11 @@ export default class PImage {
   _canAccessPixels: boolean;
 
   get width() {
-    return this._imageData.width;
+    return this._imageData ? this._imageData.width : 0;
   }
 
   get height() {
-    return this._imageData.height;
+    return this._imageData ? this._imageData.height : 0;
   }
 
   loadPixels() {

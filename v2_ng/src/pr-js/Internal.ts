@@ -1,6 +1,7 @@
 // Internal.js
 
 import PRContext from './PRContext';
+import PColor from './PColor';
 
 const CURRENT_CONTEXT_KEY = '__pr_current_context__';
 const CONTEXT_DICT_KEY = '__pr_context_dict__';
@@ -11,6 +12,23 @@ export function extractRgba(args: number[]) {
     a = 1;
   } else if (args.length === 2) {
     a = g; g = r; b = r;
+  } else if (args.length === 1) {
+    a = 1; g = r; b = r;
+  }
+  return [r, g, b, a];
+}
+
+export function extractRgba2(args: any[]) {
+  let [r, g, b, a] = args;
+  if (args.length === 3) {
+    a = 1;
+  } else if (args.length === 2) {
+    if (r instanceof PColor) {
+      const c = <PColor>r;
+      a = g; g = r.green; b = r.blue; r = r.red;
+    } else { // number
+      a = g; g = r; b = r;
+    }
   } else if (args.length === 1) {
     a = 1; g = r; b = r;
   }

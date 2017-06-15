@@ -15,23 +15,30 @@ export default class App extends PRApp {
   img: PImage;
   smallPoint: number;
   largePoint: number;
+  ready: boolean;
 
   setup() {
-    this.img = loadImage('moonwalk.jpg');
-    size(720, 400);
-    this.smallPoint = 4;
-    this.largePoint = 40;
-    noStroke();
-    background(255);
-    this.img.loadPixels();
+    loadImage('assets/moonwalk.png').then(pimage => {
+      this.img = pimage;
+      size(720, 400);
+      this.smallPoint = 4;
+      this.largePoint = 40;
+      noStroke();
+      background(255);
+      this.img.loadPixels();
+      this.ready = true;
+    });
   }
 
   draw() {
+    if (!this.ready) {
+      return;
+    }
     const pointillize = map(this.context.mouseX, 0, this.context.width, this.smallPoint, this.largePoint);
     const x = floor(random(this.img.width));
     const y = floor(random(this.img.height));
     const pix = this.img.get(x, y);
-    fill(pix.red, pix.green, pix.blue, 128);
+    fill(pix, 128);
     ellipse(x, y, pointillize, pointillize);
   }
 }

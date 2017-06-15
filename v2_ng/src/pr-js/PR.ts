@@ -4,11 +4,11 @@ import PVector from './PVector';
 import PColor from './PColor';
 import PImage from './PImage';
 import * as Utils from './Utils';
-import { extractRgba, currentContext, canvasContext } from './Internal';
+import { extractRgba2, currentContext, canvasContext } from './Internal';
 
 // Constants
 
-export enum EllipseRectMode {
+export enum BoundingMode {
   Radius,
   Center,
   Corner,
@@ -21,10 +21,10 @@ export enum ArcMode {
   Pie
 }
 
-export const RADIUS = EllipseRectMode.Radius;
-export const CENTER = EllipseRectMode.Center;
-export const CORNER = EllipseRectMode.Corner;
-export const CORNERS = EllipseRectMode.Corners;
+export const RADIUS = BoundingMode.Radius;
+export const CENTER = BoundingMode.Center;
+export const CORNER = BoundingMode.Corner;
+export const CORNERS = BoundingMode.Corners;
 
 export const OPEN = ArcMode.Open;
 export const CHORD = ArcMode.Chord;
@@ -75,13 +75,13 @@ export function background(r: number, g = r, b = r) {
   canvasContext().restore();
 }
 
-export function fill(...args: number[]) {
-  const [r, g, b, a] = extractRgba(args);
+export function fill(...args: any[]) {
+  const [r, g, b, a] = extractRgba2(args);
   canvasContext().fillStyle = Utils.rgba(r, g, b, a);
 }
 
-export function stroke(...args: number[]) {
-  const [r, g, b, a] = extractRgba(args);
+export function stroke(...args: any[]) {
+  const [r, g, b, a] = extractRgba2(args);
   canvasContext().strokeStyle = Utils.rgba(r, g, b, a);
 }
 
@@ -206,16 +206,21 @@ export function endShape() {
 // Image
 
 export function loadImage(filename: string) {
-  const img = document.createElement('img');
-  img.src = filename;
-  const canvas = document.createElement('canvas');
-  canvas.width = img.width;
-  canvas.height = img.height;
-  const context = canvas.getContext('2d');
-  context.drawImage(img, 0, 0);
   const pimage = new PImage();
-  pimage._imageData = context.getImageData(0, 0, img.width, img.height);
-  return pimage;
+  const img = document.createElement('img');
+  const canvas = document.createElement('canvas');
+  const context = canvas.getContext('2d');
+  const promise = new Promise<PImage>((resolve, reject) => {
+    img.onload = () => {
+      canvas.width = img.width;
+      canvas.height = img.height;
+      context.drawImage(img, 0, 0);
+      pimage._imageData = context.getImageData(0, 0, img.width, img.height);
+      resolve(pimage);
+    };
+  });
+  img.src = filename;
+  return promise;
 }
 
 export function createImage(width: number, height: number) {
