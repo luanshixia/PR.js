@@ -4,7 +4,7 @@ import PVector from './PVector';
 import PColor from './PColor';
 import PImage from './PImage';
 import * as Utils from './Utils';
-import { extractRGBA2, extractXYWH, currentContext, canvasContext } from './Internal';
+import { extractRGBA2, extractXYWH, currentContext, canvasContext, ensureContext } from './Internal';
 
 // Constants
 
@@ -230,12 +230,7 @@ export function loadImage(filename: string) {
       canvas.height = img.height;
       context.drawImage(img, 0, 0);
       pimage._imageData = context.getImageData(0, 0, img.width, img.height);
-
-      const tmpContext = currentContext();
-      currentContext(prContext);
-      resolve(pimage);
-      currentContext(tmpContext);
-
+      ensureContext(() => resolve(pimage), prContext)();
       prContext._pauseDraw = false; // NOTE: currentContext() will return wrong result here
     };
   });

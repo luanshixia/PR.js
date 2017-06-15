@@ -120,7 +120,9 @@ export function getBase62ShortID(length: number) {
 
 export function ensureContext(action: () => void, context: PRContext) {
   return () => {
+    const tmpContext = currentContext();
     currentContext(context);
     action();
+    currentContext(tmpContext);
   };
 }
