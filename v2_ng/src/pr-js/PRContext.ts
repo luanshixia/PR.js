@@ -27,6 +27,10 @@ export default class PRContext {
   _rectMode: BoundingMode;
   _imageMode: BoundingMode;
 
+  _fontFamily: string;
+  _fontSize: number;
+  _fontStyle: string;
+
   constructor() {
     this.width = 300;
     this.height = 300;
@@ -50,5 +54,9 @@ export default class PRContext {
     this._ellipseMode = BoundingMode.Radius;
     this._rectMode = BoundingMode.Corner;
     this._imageMode = BoundingMode.Corner;
+
+    this._fontFamily = 'Arial';
+    this._fontSize = 10;
+    this._fontStyle = null;
   }
 }

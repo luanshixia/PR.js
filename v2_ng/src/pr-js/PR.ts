@@ -29,6 +29,13 @@ export enum StrokeMode {
   Bevel
 }
 
+export enum TextStyle {
+  Normal,
+  Italic,
+  Bold,
+  ItalicBold
+}
+
 export const RADIUS = BoundingMode.Radius;
 export const CENTER = BoundingMode.Center;
 export const CORNER = BoundingMode.Corner;
@@ -43,6 +50,11 @@ export const SQUARE = StrokeMode.Square;
 export const PROJECT = StrokeMode.Project;
 export const MITER = StrokeMode.Miter;
 export const BEVEL = StrokeMode.Bevel;
+
+export const NORMAL = TextStyle.Normal;
+export const ITALIC = TextStyle.Italic;
+export const BOLD = TextStyle.Bold;
+export const ITALICBOLD = TextStyle.ItalicBold;
 
 export const PI = Math.PI;
 export const HALF_PI = Math.PI / 2;
@@ -69,6 +81,12 @@ export function smooth() {
   canvasContext().webkitImageSmoothingEnabled = true;
   canvasContext().mozImageSmoothingEnabled = true;
   canvasContext().imageSmoothingEnabled = true;
+}
+
+export function noSmooth() {
+  canvasContext().webkitImageSmoothingEnabled = false;
+  canvasContext().mozImageSmoothingEnabled = false;
+  canvasContext().imageSmoothingEnabled = false;
 }
 
 export function clear() {
@@ -115,8 +133,23 @@ export function strokeJoin(join: StrokeMode) {
                              join === StrokeMode.Round ? 'round' : null;
 }
 
-export function textFont(which: string, size: number) {
-  canvasContext().font = `${size}px ${which}`;
+export function textFont(which: string, size: number, style?: string) {
+  currentContext()._fontFamily = which;
+  currentContext()._fontSize = size;
+  currentContext()._fontStyle = style;
+  canvasContext().font = style ? `${style} ${size}px ${which}` : `${size}px ${which}`;
+}
+
+export function textSize(size: number) {
+  currentContext()._fontSize = size;
+  textFont(currentContext()._fontFamily, currentContext()._fontSize, currentContext()._fontStyle);
+}
+
+export function textStyle(style: TextStyle) {
+  currentContext()._fontStyle = style === TextStyle.Italic ? 'italic' :
+                                style === TextStyle.Bold ? 'bold' :
+                                style === TextStyle.ItalicBold ? 'italic bold' : null;
+  textFont(currentContext()._fontFamily, currentContext()._fontSize, currentContext()._fontStyle);
 }
 
 export function translate(x: number, y: number) {
@@ -371,4 +404,12 @@ export function constrain(n: number, low: number, high: number) {
 
 export function color(...args: number[]) {
   return new PColor(args);
+}
+
+export function vector(x?: number, y?: number, z?: number) {
+  return new PVector(x, y, z);
+}
+
+export function print(msg: any) {
+  console.log(msg);
 }
