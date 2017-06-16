@@ -21,6 +21,14 @@ export enum ArcMode {
   Pie
 }
 
+export enum StrokeMode {
+  Round,
+  Square,
+  Project,
+  Miter,
+  Bevel
+}
+
 export const RADIUS = BoundingMode.Radius;
 export const CENTER = BoundingMode.Center;
 export const CORNER = BoundingMode.Corner;
@@ -29,6 +37,12 @@ export const CORNERS = BoundingMode.Corners;
 export const OPEN = ArcMode.Open;
 export const CHORD = ArcMode.Chord;
 export const PIE = ArcMode.Pie;
+
+export const ROUND = StrokeMode.Round;
+export const SQUARE = StrokeMode.Square;
+export const PROJECT = StrokeMode.Project;
+export const MITER = StrokeMode.Miter;
+export const BEVEL = StrokeMode.Bevel;
 
 export const PI = Math.PI;
 export const HALF_PI = Math.PI / 2;
@@ -87,6 +101,18 @@ export function stroke(...args: any[]) {
 
 export function strokeWeight(w: number) {
   canvasContext().lineWidth = w;
+}
+
+export function strokeCap(cap: StrokeMode) {
+  canvasContext().lineCap = cap === StrokeMode.Round ? 'round' :
+                            cap === StrokeMode.Square ? 'butt' :
+                            cap === StrokeMode.Project ? 'square' : null;
+}
+
+export function strokeJoin(join: StrokeMode) {
+  canvasContext().lineJoin = join === StrokeMode.Miter ? 'miter' :
+                             join === StrokeMode.Bevel ? 'bevel' :
+                             join === StrokeMode.Round ? 'round' : null;
 }
 
 export function textFont(which: string, size: number) {
