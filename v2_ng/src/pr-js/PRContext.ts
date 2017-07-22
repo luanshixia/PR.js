@@ -51,7 +51,7 @@ export default class PRContext {
     this._vertices = [];
     this._pauseDraw = false;
 
-    this._ellipseMode = BoundingMode.Radius;
+    this._ellipseMode = BoundingMode.Center;
     this._rectMode = BoundingMode.Corner;
     this._imageMode = BoundingMode.Corner;
 
