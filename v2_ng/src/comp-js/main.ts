@@ -150,7 +150,7 @@ export const h6 = generateContainerFactory('h6');
 export class UserComp<T> extends Comp<T> {
   init() {
     super.init();
-    this.tagName = "div";
+    this.tagName = 'div';
     this.renderMode = TagRenderMode.normal;
   }
 }
