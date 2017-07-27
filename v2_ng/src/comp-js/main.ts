@@ -1,19 +1,5 @@
 // comp.js
 
-export function _(tagName: string, attributes: any, classNames: string[], ...children: any[]) {
-  return `<${tagName} comp-id="" class="${classNames.join(' ')}" ${Object.keys(attributes).map(key => key + '="' + attributes[key] + '"').join(' ')}>${children.join('')}</${tagName}>`;
-}
-
-export function __(tagName: string, attributes: any, classNames: string[]) {
-  return `<${tagName} comp-id="" class="${classNames.join(' ')}" ${Object.keys(attributes).map(key => key + '="' + attributes[key] + '"').join(' ')} />`;
-}
-
-export function input(type: string, attributes: any, classNames: string[], value: any) {
-  attributes.type = type;
-  attributes.value = value;
-  return __('input', attributes, classNames);
-}
-
 export enum TagRenderMode {
   normal,
   selfClosing
@@ -24,18 +10,17 @@ export interface IComp {
   toHtml();
 }
 
-export interface IHtmlState {
+export interface IHtmlOptions {
   tagName: string;
-  attributes?: any;
-  classNames?: string[];
-  children?: IComp[];
-  content?: string;
+  attributes: any;
+  classNames: string[];
+  children: any[];
   renderMode?: TagRenderMode;
 }
 
 export class Comp<T> implements IComp {
   id: string;
-  state: T;
+  options: T;
 
   tagName: string;
   attributes: any;
@@ -45,13 +30,13 @@ export class Comp<T> implements IComp {
   parent: IComp;
   renderMode: TagRenderMode;
 
-  constructor(state: any) {
-    this.id = this.generateId(8);
-    this.state = state;
+  constructor(options: T) {
+    this.id = this._generateId(8);
+    this.options = options;
     this.init();
   }
 
-  generateId(length: number) {
+  _generateId(length: number) {
     const base62Chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
     const chars = [];
     for (let i = 0; i < length; i += 1) {
@@ -62,11 +47,29 @@ export class Comp<T> implements IComp {
 
   appendChild(child: IComp) {
     child.parent = this;
+    if (!this.children) {
+      this.children = [];
+    }
     this.children.push(child);
   }
 
+  compose(tagName: string, attributes: any, classNames: string[], ...children: any[]) {
+    this.tagName = tagName;
+    this.attributes = attributes;
+    this.classNames = classNames;
+    if (children.length === 1 && typeof children[0] === 'string') {
+      this.content = children[0];
+    } else {
+      this.children = children;
+      this.children.forEach(child => child.parent = this);
+    }
+  }
+
   init() {
-    // empty
+    this.tagName = 'div';
+    this.attributes = {}
+    this.classNames = [];
+    this.children = [];
   }
 
   toHtml() {
@@ -79,8 +82,8 @@ export class Comp<T> implements IComp {
     return `<${this.tagName} comp-id="${this.id}" class="${this.classNames.join(' ')}" ${Object.keys(this.attributes).map(key => key + '="' + this.attributes[key] + '"').join(' ')}>${content}</${this.tagName}>`;
   }
 
-  update(state: any) {
-    Object.assign(this.state, state);
+  update(options: any) {
+    Object.assign(this.options, options);
     this.init();
 
     const old = document.querySelector(`[comp-id=${this.id}]`);
@@ -89,29 +92,20 @@ export class Comp<T> implements IComp {
   }
 }
 
-export class SystemComp extends Comp<IHtmlState> {
+export class SystemComp extends Comp<IHtmlOptions> {
   init() {
     super.init();
-    this.tagName = this.state.tagName;
-    this.attributes = this.state.attributes;
-    this.classNames = this.state.classNames;
-    this.children = this.state.children;
-    this.children.forEach(child => child.parent = this);
-    this.content = this.state.content;
-    this.renderMode = this.state.renderMode;
+    this.compose(
+      this.options.tagName,
+      this.options.attributes,
+      this.options.classNames,
+      this.options.children
+    );
+    this.options.renderMode && (this.renderMode = this.options.renderMode);
   }
 }
 
 export function element(tagName: string, attributes: any, classNames: string[], ...children: any[]) {
-  if (children.length === 1 && typeof children[0] === 'string') {
-    return new SystemComp({
-      tagName,
-      attributes,
-      classNames,
-      content: children[0],
-      renderMode: TagRenderMode.normal
-    });
-  }
   return new SystemComp({
     tagName,
     attributes,
@@ -126,55 +120,32 @@ export function selfClosingElement(tagName: string, attributes: any, classNames:
     tagName,
     attributes,
     classNames,
+    children: [],
     renderMode: TagRenderMode.selfClosing
   });
 }
 
-export class Div extends SystemComp {
-  init() {
-    super.init();
-    this.tagName = 'div';
-    this.renderMode = TagRenderMode.normal;
-  }
+function generateContainerFactory(tagName: string) {
+  return (attributes: any, classNames: string[], ...children: any[]) =>
+    element(tagName, attributes, classNames, children);
 }
 
-export class Span extends SystemComp {
-  init() {
-    super.init();
-    this.tagName = 'span';
-    this.renderMode = TagRenderMode.normal;
-  }
-}
-
-export class Input extends SystemComp {
-  init() {
-    super.init();
-    this.tagName = 'input';
-    this.renderMode = TagRenderMode.selfClosing;
-  }
-}
-
-function generateContainerElementFactory(constructor: typeof SystemComp) {
-  return (attributes: any, classNames: string[], ...children: any[]) => {
-    if (children.length === 1 && typeof children[0] === 'string') {
-      return new constructor({
-        attributes,
-        classNames,
-        content: children[0],
-        renderMode: TagRenderMode.normal
-      });
-    }
-    return new constructor({
-      attributes,
-      classNames,
-      children,
-      renderMode: TagRenderMode.normal
-    });
-  }
-}
-
-export const div = generateContainerElementFactory(Div);
-export const span = generateContainerElementFactory(Span);
+export const div = generateContainerFactory('div');
+export const span = generateContainerFactory('span');
+export const ul = generateContainerFactory('ul');
+export const ol = generateContainerFactory('ol');
+export const li = generateContainerFactory('li');
+export const section = generateContainerFactory('section');
+export const article = generateContainerFactory('article');
+export const header = generateContainerFactory('header');
+export const footer = generateContainerFactory('footer');
+export const aside = generateContainerFactory('aside');
+export const h1 = generateContainerFactory('h1');
+export const h2 = generateContainerFactory('h2');
+export const h3 = generateContainerFactory('h3');
+export const h4 = generateContainerFactory('h4');
+export const h5 = generateContainerFactory('h5');
+export const h6 = generateContainerFactory('h6');
 
 export class UserComp<T> extends Comp<T> {
   init() {
@@ -186,9 +157,9 @@ export class UserComp<T> extends Comp<T> {
 
 export class Test extends UserComp<any> {
   init() {
-    this.children = [
-      span({}, [], this.state.title),
-      span({}, [], this.state.description)
-    ];
+    this.compose('div', {}, [],
+      span({}, [], this.options.title),
+      span({}, [], this.options.description)
+    );
   }
 }
