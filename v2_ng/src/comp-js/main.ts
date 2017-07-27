@@ -89,7 +89,7 @@ export class Comp<T> implements IComp {
   }
 }
 
-export class GenericElement extends Comp<IHtmlState> {
+export class SystemComp extends Comp<IHtmlState> {
   init() {
     super.init();
     this.tagName = this.state.tagName;
@@ -104,7 +104,7 @@ export class GenericElement extends Comp<IHtmlState> {
 
 export function element(tagName: string, attributes: any, classNames: string[], ...children: any[]) {
   if (children.length === 1 && typeof children[0] === 'string') {
-    return new GenericElement({
+    return new SystemComp({
       tagName,
       attributes,
       classNames,
@@ -112,7 +112,7 @@ export function element(tagName: string, attributes: any, classNames: string[], 
       renderMode: TagRenderMode.normal
     });
   }
-  return new GenericElement({
+  return new SystemComp({
     tagName,
     attributes,
     classNames,
@@ -122,7 +122,7 @@ export function element(tagName: string, attributes: any, classNames: string[], 
 }
 
 export function selfClosingElement(tagName: string, attributes: any, classNames: string[]) {
-  return new GenericElement({
+  return new SystemComp({
     tagName,
     attributes,
     classNames,
@@ -130,7 +130,7 @@ export function selfClosingElement(tagName: string, attributes: any, classNames:
   });
 }
 
-export class Div extends GenericElement {
+export class Div extends SystemComp {
   init() {
     super.init();
     this.tagName = 'div';
@@ -138,7 +138,7 @@ export class Div extends GenericElement {
   }
 }
 
-export class Span extends GenericElement {
+export class Span extends SystemComp {
   init() {
     super.init();
     this.tagName = 'span';
@@ -146,7 +146,7 @@ export class Span extends GenericElement {
   }
 }
 
-export class Input extends GenericElement {
+export class Input extends SystemComp {
   init() {
     super.init();
     this.tagName = 'input';
@@ -154,7 +154,7 @@ export class Input extends GenericElement {
   }
 }
 
-function generateContainerElementFactory(constructor: typeof GenericElement) {
+function generateContainerElementFactory(constructor: typeof SystemComp) {
   return (attributes: any, classNames: string[], ...children: any[]) => {
     if (children.length === 1 && typeof children[0] === 'string') {
       return new constructor({
@@ -176,8 +176,19 @@ function generateContainerElementFactory(constructor: typeof GenericElement) {
 export const div = generateContainerElementFactory(Div);
 export const span = generateContainerElementFactory(Span);
 
-export class Test extends Comp<any> {
+export class UserComp<T> extends Comp<T> {
   init() {
+    super.init();
+    this.tagName = "div";
+    this.renderMode = TagRenderMode.normal;
+  }
+}
 
+export class Test extends UserComp<any> {
+  init() {
+    this.children = [
+      span({}, [], this.state.title),
+      span({}, [], this.state.description)
+    ];
   }
 }
