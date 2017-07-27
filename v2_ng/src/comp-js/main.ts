@@ -130,22 +130,61 @@ function generateContainerFactory(tagName: string) {
     element(tagName, attributes, classNames, children);
 }
 
+function generateLeafFactory(tagName: string) {
+  return (attributes: any, classNames: string[]) =>
+    selfClosingElement(tagName, attributes, classNames);
+}
+
 export const div = generateContainerFactory('div');
-export const span = generateContainerFactory('span');
-export const ul = generateContainerFactory('ul');
-export const ol = generateContainerFactory('ol');
-export const li = generateContainerFactory('li');
+export const main = generateContainerFactory('main');
 export const section = generateContainerFactory('section');
 export const article = generateContainerFactory('article');
 export const header = generateContainerFactory('header');
 export const footer = generateContainerFactory('footer');
 export const aside = generateContainerFactory('aside');
+export const nav = generateContainerFactory('nav');
+export const details = generateContainerFactory('details');
+export const summary = generateContainerFactory('summary');
+
+export const span = generateContainerFactory('span');
+export const a = generateContainerFactory('a');
+
+export const ul = generateContainerFactory('ul');
+export const ol = generateContainerFactory('ol');
+export const li = generateContainerFactory('li');
+
 export const h1 = generateContainerFactory('h1');
 export const h2 = generateContainerFactory('h2');
 export const h3 = generateContainerFactory('h3');
 export const h4 = generateContainerFactory('h4');
 export const h5 = generateContainerFactory('h5');
 export const h6 = generateContainerFactory('h6');
+
+export const form = generateContainerFactory('form');
+export const label = generateContainerFactory('label');
+export const canvas = generateContainerFactory('canvas');
+export const blockquote = generateContainerFactory('blockquote');
+export const code = generateContainerFactory('code');
+export const pre = generateContainerFactory('pre');
+
+export const button = generateContainerFactory('button');
+export const textarea = generateContainerFactory('textarea');
+export const select = generateContainerFactory('select');
+export const option = generateContainerFactory('option');
+
+export const table = generateContainerFactory('table');
+export const thead = generateContainerFactory('thead');
+export const tbody = generateContainerFactory('tbody');
+export const colgroup = generateContainerFactory('colgroup');
+export const col = generateContainerFactory('col');
+export const tr = generateContainerFactory('tr');
+export const th = generateContainerFactory('th');
+export const td = generateContainerFactory('td');
+
+export const input = generateLeafFactory('input');
+export const img = generateLeafFactory('img');
+export const br = generateLeafFactory('br');
+export const hr = generateLeafFactory('hr');
 
 export class UserComp<T> extends Comp<T> {
   init() {
