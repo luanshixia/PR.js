@@ -137,7 +137,7 @@ export class SystemComp extends Comp<IHtmlOptions> {
       this.options.tagName,
       this.options.attributes,
       this.options.classNames,
-      this.options.children
+      ...this.options.children
     );
     this.options.renderMode && (this.renderMode = this.options.renderMode);
   }
@@ -165,7 +165,7 @@ export function selfClosingElement(tagName: string, attributes: any, classNames:
 
 function generateContainerFactory(tagName: string) {
   return (attributes: any, classNames: string[], ...children: any[]) =>
-    element(tagName, attributes, classNames, children);
+    element(tagName, attributes, classNames, ...children);
 }
 
 function generateLeafFactory(tagName: string) {
@@ -246,7 +246,7 @@ export class Test extends UserComp<any> {
   }
 }
 
-export class Rating extends UserComp<{ name, rating }> {
+export class Rating extends UserComp<{ name: string, rating: number }> {
   init() {
     super.init();
 

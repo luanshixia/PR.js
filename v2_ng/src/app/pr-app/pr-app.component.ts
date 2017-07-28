@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, AfterViewInit, Input } from '@angular/core';
 import { InputConverter } from '../../utils/InputConverter';
 import Examples from '../../pr-js/examples/index';
 
@@ -8,7 +8,7 @@ import Examples from '../../pr-js/examples/index';
   styleUrls: ['./pr-app.component.css'],
   providers: [Examples]
 })
-export class PrAppComponent implements OnInit {
+export class PrAppComponent implements OnInit, AfterViewInit {
 
   @Input() caption: string;
   @Input() description: string;
