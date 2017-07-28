@@ -261,11 +261,8 @@ export class Rating extends UserComp<{ name: string, rating: number }> {
     const symbol1 = 'X';
 
     this.compose('span', {}, [],
-      span({ [dataValue]: 1 }, [], this.options.rating > 0 ? symbol1 : symbol0),
-      span({ [dataValue]: 2 }, [], this.options.rating > 1 ? symbol1 : symbol0),
-      span({ [dataValue]: 3 }, [], this.options.rating > 2 ? symbol1 : symbol0),
-      span({ [dataValue]: 4 }, [], this.options.rating > 3 ? symbol1 : symbol0),
-      span({ [dataValue]: 5 }, [], this.options.rating > 4 ? symbol1 : symbol0)
+      ...[0, 1, 2, 3, 4].map(i =>
+        span({ [dataValue]: i + 1 }, [], this.options.rating > i ? symbol1 : symbol0))
     ).register('click', e => {
       const rating = parseInt((<Element>e.target).getAttribute(dataValue))
       this.update({ rating });
