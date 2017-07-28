@@ -2,12 +2,13 @@
 
 export enum TagRenderMode {
   normal,
-  selfClosing
+  selfClosing,
+  startTag
 }
 
 export interface IComp {
   parent: IComp;
-  toHtml();
+  _toHtml(): string;
 }
 
 export interface IHtmlOptions {
@@ -16,6 +17,19 @@ export interface IHtmlOptions {
   classNames: string[];
   children: any[];
   renderMode?: TagRenderMode;
+}
+
+export class Literal implements IComp {
+  parent: IComp;
+  literal: string;
+
+  constructor(literal: string) {
+    this.literal = literal;
+  }
+
+  _toHtml() {
+    return this.literal;
+  }
 }
 
 export class Comp<T> implements IComp {
@@ -28,6 +42,7 @@ export class Comp<T> implements IComp {
   children: IComp[];
   content: string;
   parent: IComp;
+  registrations: { type: string, listener: EventListener, useCapture?: boolean }[];
   renderMode: TagRenderMode;
 
   constructor(options: T) {
@@ -51,6 +66,7 @@ export class Comp<T> implements IComp {
       this.children = [];
     }
     this.children.push(child);
+    return this;
   }
 
   compose(tagName: string, attributes: any, classNames: string[], ...children: any[]) {
@@ -63,6 +79,7 @@ export class Comp<T> implements IComp {
       this.children = children;
       this.children.forEach(child => child.parent = this);
     }
+    return this;
   }
 
   init() {
@@ -70,25 +87,46 @@ export class Comp<T> implements IComp {
     this.attributes = {}
     this.classNames = [];
     this.children = [];
+    this.registrations = [];
   }
 
-  toHtml() {
+  _toHtml() {
     if (this.renderMode === TagRenderMode.selfClosing) {
       return `<${this.tagName} comp-id="${this.id}" class="${this.classNames.join(' ')}" ${Object.keys(this.attributes).map(key => key + '="' + this.attributes[key] + '"').join(' ')} />`;
     }
 
-    const content = this.content || this.children.map(child => child.toHtml()).join('');
+    if (this.renderMode === TagRenderMode.startTag) {
+      return `<${this.tagName}>`;
+    }
+
+    const content = this.content || this.children.map(child => child._toHtml()).join('');
 
     return `<${this.tagName} comp-id="${this.id}" class="${this.classNames.join(' ')}" ${Object.keys(this.attributes).map(key => key + '="' + this.attributes[key] + '"').join(' ')}>${content}</${this.tagName}>`;
+  }
+
+  _element() {
+    return document.querySelector(`[comp-id=${this.id}]`);
   }
 
   update(options: any) {
     Object.assign(this.options, options);
     this.init();
 
-    const old = document.querySelector(`[comp-id=${this.id}]`);
-    old.insertAdjacentHTML('beforebegin', this.toHtml());
+    const old = this._element();
+    old.insertAdjacentHTML('beforebegin', this._toHtml());
     old.remove();
+
+    return this;
+  }
+
+  register(type: string, listener: EventListener, useCapture = false) {
+    this.registrations.push({ type, listener, useCapture });
+    return this;
+  }
+
+  renderTo(selector: string) {
+    document.querySelector(selector).innerHTML = this._toHtml();
+    this.registrations.forEach(({ type, listener, useCapture}) => this._element().addEventListener(type, listener, useCapture));
   }
 }
 
@@ -133,6 +171,10 @@ function generateContainerFactory(tagName: string) {
 function generateLeafFactory(tagName: string) {
   return (attributes: any, classNames: string[]) =>
     selfClosingElement(tagName, attributes, classNames);
+}
+
+function generateMinimalLeafFactory(tagName: string) {
+  return () => new Literal(`<${tagName}>`);
 }
 
 export const div = generateContainerFactory('div');
@@ -183,8 +225,8 @@ export const td = generateContainerFactory('td');
 
 export const input = generateLeafFactory('input');
 export const img = generateLeafFactory('img');
-export const br = generateLeafFactory('br');
-export const hr = generateLeafFactory('hr');
+export const br = generateMinimalLeafFactory('br');
+export const hr = generateMinimalLeafFactory('hr');
 
 export class UserComp<T> extends Comp<T> {
   init() {
@@ -196,9 +238,31 @@ export class UserComp<T> extends Comp<T> {
 
 export class Test extends UserComp<any> {
   init() {
+    super.init();
     this.compose('div', {}, [],
       span({}, [], this.options.title),
       span({}, [], this.options.description)
     );
+  }
+}
+
+export class Rating extends UserComp<{ name, rating }> {
+  init() {
+    super.init();
+
+    const dataValue = 'data-value';
+    const symbol0 = 'O';
+    const symbol1 = 'X';
+
+    this.compose('span', {}, [],
+      span({ [dataValue]: 1 }, [], this.options.rating > 0 ? symbol1 : symbol0),
+      span({ [dataValue]: 2 }, [], this.options.rating > 1 ? symbol1 : symbol0),
+      span({ [dataValue]: 3 }, [], this.options.rating > 2 ? symbol1 : symbol0),
+      span({ [dataValue]: 4 }, [], this.options.rating > 3 ? symbol1 : symbol0),
+      span({ [dataValue]: 5 }, [], this.options.rating > 4 ? symbol1 : symbol0)
+    ).register('click', e => {
+      const rating = parseInt((<Element>e.target).getAttribute(dataValue))
+      this.update({ rating });
+    });
   }
 }
