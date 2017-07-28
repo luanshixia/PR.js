@@ -104,6 +104,10 @@ export class Comp<T> implements IComp {
     return `<${this.tagName} comp-id="${this.id}" class="${this.classNames.join(' ')}" ${Object.keys(this.attributes).map(key => key + '="' + this.attributes[key] + '"').join(' ')}>${content}</${this.tagName}>`;
   }
 
+  _doRegistrations() {
+    this.registrations.forEach(({ type, listener, useCapture}) => this._element().addEventListener(type, listener, useCapture));
+  }
+
   _element() {
     return document.querySelector(`[comp-id=${this.id}]`);
   }
@@ -116,6 +120,8 @@ export class Comp<T> implements IComp {
     old.insertAdjacentHTML('beforebegin', this._toHtml());
     old.remove();
 
+    this._doRegistrations();
+
     return this;
   }
 
@@ -126,7 +132,7 @@ export class Comp<T> implements IComp {
 
   renderTo(selector: string) {
     document.querySelector(selector).innerHTML = this._toHtml();
-    this.registrations.forEach(({ type, listener, useCapture}) => this._element().addEventListener(type, listener, useCapture));
+    this._doRegistrations();
   }
 }
 
