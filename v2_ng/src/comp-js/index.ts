@@ -273,6 +273,14 @@ export class If extends BuiltinComp<{ if: boolean, then: IComp, else: IComp }> {
   }
 }
 
+export class For<T> extends BuiltinComp<{ data: T[], mapper: (T) => IComp }> {
+  init() {
+    super.init();
+    this.attributes['comp-for'] = null;
+    this.options.data.forEach(item => this.children.push(this.options.mapper(item)));
+  }
+}
+
 export class Test extends UserComp<any> {
   init() {
     super.init();
