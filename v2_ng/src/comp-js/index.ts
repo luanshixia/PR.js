@@ -101,8 +101,13 @@ export class Comp<T> implements IComp {
   }
 
   _toHtml() {
+    const _attr = (attr: Object) => Object.keys(attr)
+        .filter(key => attr[key] !== undefined)
+        .map(key => attr[key] !== null ? `${key}="${attr[key]}"` : key)
+        .join(' ');
+
     if (this.renderMode === TagRenderMode.selfClosing) {
-      return `<${this.tagName} comp-id="${this.id}" class="${this.classNames.join(' ')}" ${Object.keys(this.attributes).map(key => key + '="' + this.attributes[key] + '"').join(' ')} />`;
+      return `<${this.tagName} comp-id="${this.id}" class="${this.classNames.join(' ')}" ${_attr(this.attributes)} />`;
     }
 
     if (this.renderMode === TagRenderMode.startTag) {
@@ -111,7 +116,7 @@ export class Comp<T> implements IComp {
 
     const content = this.content || this.children.map(child => child._toHtml()).join('');
 
-    return `<${this.tagName} comp-id="${this.id}" class="${this.classNames.join(' ')}" ${Object.keys(this.attributes).map(key => key + '="' + this.attributes[key] + '"').join(' ')}>${content}</${this.tagName}>`;
+    return `<${this.tagName} comp-id="${this.id}" class="${this.classNames.join(' ')}" ${_attr(this.attributes)}>${content}</${this.tagName}>`;
   }
 
   _doRegistrations() {
@@ -249,6 +254,22 @@ export class UserComp<T> extends Comp<T> {
     super.init();
     this.tagName = 'div';
     this.renderMode = TagRenderMode.normal;
+  }
+}
+
+export class BuiltinComp<T> extends Comp<T> {
+  init() {
+    super.init();
+    this.tagName = 'div';
+    this.renderMode = TagRenderMode.normal;
+  }
+}
+
+export class If extends BuiltinComp<{ if: boolean, then: IComp, else: IComp }> {
+  init() {
+    super.init();
+    this.attributes['comp-if'] = null;
+    this.children.push(this.options.if ? this.options.then : this.options.else);
   }
 }
 
