@@ -102,9 +102,9 @@ export class Comp<T> implements IComp {
 
   _toHtml() {
     const _attr = (attr: Object) => Object.keys(attr)
-        .filter(key => attr[key] !== undefined)
-        .map(key => attr[key] !== null ? `${key}="${attr[key]}"` : key)
-        .join(' ');
+      .filter(key => attr[key] !== undefined)
+      .map(key => attr[key] !== null ? `${key}="${attr[key]}"` : key)
+      .join(' ');
 
     if (this.renderMode === TagRenderMode.selfClosing) {
       return `<${this.tagName} comp-id="${this.id}" class="${this.classNames.join(' ')}" ${_attr(this.attributes)} />`;
@@ -120,7 +120,7 @@ export class Comp<T> implements IComp {
   }
 
   _doRegistrations() {
-    this.registrations.forEach(({ type, listener, useCapture}) => this._element().addEventListener(type, listener, useCapture));
+    this.registrations.forEach(({ type, listener, useCapture }) => this._element().addEventListener(type, listener, useCapture));
   }
 
   _element() {
@@ -278,6 +278,27 @@ export class For<T> extends BuiltinComp<{ data: T[], mapper: (T) => IComp }> {
     super.init();
     this.attributes['comp-for'] = null;
     this.options.data.forEach(item => this.children.push(this.options.mapper(item)));
+  }
+}
+
+export class RouterPage extends UserComp<{ params: string[] }> {
+  init() {
+    super.init();
+    this.attributes['comp-page'] = null;
+  }
+}
+
+export class RouterOutlet extends BuiltinComp<{ routes: { path: string, comp: IComp }[] }> {
+  init() {
+    super.init();
+    this.attributes['comp-outlet'] = null;
+  }
+}
+
+export class RouterLink extends BuiltinComp<{ href: string }> {
+  init() {
+    super.init();
+    this.attributes['comp-link'] = null;
   }
 }
 
