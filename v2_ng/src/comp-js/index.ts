@@ -14,10 +14,12 @@ export interface IComp {
 export interface IHtmlOptions {
   tagName: string;
   attributes: any;
-  classNames: string[];
+  classNames: IClassNames;
   children: any[];
   renderMode?: TagRenderMode;
 }
+
+export type IClassNames = string | string[] | { [key: string]: boolean }
 
 export class Literal implements IComp {
   parent: IComp;
@@ -69,10 +71,18 @@ export class Comp<T> implements IComp {
     return this;
   }
 
-  compose(tagName: string, attributes: any, classNames: string[], ...children: any[]) {
+  compose(tagName: string, attributes: any, classNames: IClassNames, ...children: any[]) {
     this.tagName = tagName;
     this.attributes = attributes;
-    this.classNames = classNames;
+    if (typeof classNames === 'string') {
+      this.classNames = classNames.split(' ');
+    } else { // typeof classNames === 'object'
+      if (classNames instanceof Array) {
+        this.classNames = classNames;
+      } else {
+        this.classNames = Object.keys(classNames).filter(key => classNames[key]);
+      }
+    }
     if (children.length === 1 && typeof children[0] === 'string') {
       this.content = children[0];
     } else {
@@ -149,7 +159,7 @@ export class SystemComp extends Comp<IHtmlOptions> {
   }
 }
 
-export function element(tagName: string, attributes: any, classNames: string[], ...children: any[]) {
+export function element(tagName: string, attributes: any, classNames: IClassNames, ...children: any[]) {
   return new SystemComp({
     tagName,
     attributes,
@@ -159,7 +169,7 @@ export function element(tagName: string, attributes: any, classNames: string[], 
   });
 }
 
-export function selfClosingElement(tagName: string, attributes: any, classNames: string[]) {
+export function selfClosingElement(tagName: string, attributes: any, classNames: IClassNames) {
   return new SystemComp({
     tagName,
     attributes,
@@ -170,12 +180,12 @@ export function selfClosingElement(tagName: string, attributes: any, classNames:
 }
 
 function generateContainerFactory(tagName: string) {
-  return (attributes: any, classNames: string[], ...children: any[]) =>
+  return (attributes: any, classNames: IClassNames, ...children: any[]) =>
     element(tagName, attributes, classNames, ...children);
 }
 
 function generateLeafFactory(tagName: string) {
-  return (attributes: any, classNames: string[]) =>
+  return (attributes: any, classNames: IClassNames) =>
     selfClosingElement(tagName, attributes, classNames);
 }
 
@@ -257,12 +267,12 @@ export class Rating extends UserComp<{ name: string, rating: number }> {
     super.init();
 
     const dataValue = 'data-value';
-    const symbol0 = 'O';
-    const symbol1 = 'X';
+    const symbol0 = '\u2606';
+    const symbol1 = '\u2605';
 
     this.compose('span', {}, [],
       ...[0, 1, 2, 3, 4].map(i =>
-        span({ [dataValue]: i + 1 }, [], this.options.rating > i ? symbol1 : symbol0))
+        span({ [dataValue]: i + 1 }, ['rating-star'], this.options.rating > i ? symbol1 : symbol0))
     ).register('click', e => {
       const rating = parseInt((<Element>e.target).getAttribute(dataValue))
       this.update({ rating });

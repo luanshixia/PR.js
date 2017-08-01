@@ -31,20 +31,28 @@
         {{title}}
       </h1>
 
-      <pr-app caption="Simple Button" description="Non-loop application." canvasWidth="640" canvasHeight="360" example="button"
-        loop="false"></pr-app>
-      <pr-app caption="Bubbles" description="Loop application." canvasWidth="640" canvasHeight="360" example="bubbles"
-        loop="true"></pr-app>
-      <pr-app caption="Chain" description="Loop application." canvasWidth="640" canvasHeight="360" example="chain"
-        loop="true"></pr-app>
-      <pr-app caption="Morph" description="Loop application." canvasWidth="640" canvasHeight="360" example="morph"
-        loop="true"></pr-app>
-      <!--<pr-app caption="Pointillism" description="Loop application." canvasWidth="720" canvasHeight="400" example="pointillism"
-        loop="true"></pr-app>-->
-      <pr-app caption="Simple Shapes" description="Non-loop application." canvasWidth="720" canvasHeight="400" example="shape"
-        loop="false"></pr-app>
+      <div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect">
+        <div class="mdl-tabs__tab-bar">
+          <a href="#pr-panel" class="mdl-tabs__tab">PR.js</a>
+          <a href="#comp-panel" class="mdl-tabs__tab is-active">Comp.js</a>
+        </div>
 
-      <div id="comp-test"></div>
+        <div class="mdl-tabs__panel" id="pr-panel">
+          <pr-app caption="Simple Button" description="Non-loop application." canvasWidth="640" canvasHeight="360" example="button"
+            loop="false"></pr-app>
+          <pr-app caption="Bubbles" description="Loop application." canvasWidth="640" canvasHeight="360" example="bubbles" loop="true"></pr-app>
+          <pr-app caption="Chain" description="Loop application." canvasWidth="640" canvasHeight="360" example="chain" loop="true"></pr-app>
+          <pr-app caption="Morph" description="Loop application." canvasWidth="640" canvasHeight="360" example="morph" loop="true"></pr-app>
+          <!--<pr-app caption="Pointillism" description="Loop application." canvasWidth="720" canvasHeight="400" example="pointillism"
+            loop="true"></pr-app>-->
+          <pr-app caption="Simple Shapes" description="Non-loop application." canvasWidth="720" canvasHeight="400" example="shape"
+            loop="false"></pr-app>
+        </div>
+
+        <div class="mdl-tabs__panel is-active" id="comp-panel">
+          <div id="comp-test"></div>
+        </div>
+      </div>
 
     </div>
   </main>
