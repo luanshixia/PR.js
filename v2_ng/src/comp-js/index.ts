@@ -281,7 +281,25 @@ export class For<T> extends BuiltinComp<{ data: T[], mapper: (T) => IComp }> {
   }
 }
 
-export class RouterPage extends UserComp<{ params: string[] }> {
+export class Select<T> extends BuiltinComp<{ data: T[], name: string, labelMapper: (T) => string, valueMapper: (T) => string, useRadio: boolean }> {
+  init() {
+    super.init();
+    if (this.options.useRadio) {
+      this.compose('div', {}, [],
+        ...this.options.data.map((item, index) => div({}, [],
+          input({ type: 'radio', id: `${this.id}-option-${index}`, name, value: this.options.valueMapper(item) }, []),
+          label({ for: `${this.id}-option-${index}` }, [], this.options.labelMapper(item)))
+        )
+      );
+    } else {
+      this.compose('select', { name }, [],
+        ...this.options.data.map((item, index) => option({ value: this.options.valueMapper(item) }, [], this.options.labelMapper(item)))
+      );
+    }
+  }
+}
+
+export class RouterPage extends BuiltinComp<{ params: string[] }> {
   init() {
     super.init();
     this.attributes['comp-page'] = null;
