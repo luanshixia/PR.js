@@ -1,6 +1,6 @@
 import { Component, AfterViewInit } from '@angular/core';
 import { Rating } from '../comp-js';
-import { Node } from '../emind';
+import { Node, MindMap } from '../emind';
 
 @Component({
   selector: 'app-root',
@@ -24,6 +24,11 @@ export class AppComponent implements AfterViewInit {
     root.updateAllRecursively();
 
     root.walk((node: Node) => console.log(node.toDebugString()));
+
+    const map = new MindMap();
+    map.root = root;
+
+    console.log(map.toSvgString());
 
   }
 }
