@@ -138,13 +138,20 @@ export class Node {
   }
 
   updateChildrenTopsRecursively() {
-    let acumuTop = this.top + this.height / 2 - this.totalHeight / 2;
+    if (this.children.length > 0) {
+      let acumuTop = this.top + this.height / 2 - this.totalHeight / 2 + this.children[0].totalHeight / 2 - this.children[0].height / 2;
 
-    for (const node of this.children) {
-      node.top = acumuTop;
-      node.updateChildrenTopsRecursively();
-      acumuTop += node.totalHeight;
-      acumuTop += vMargin;
+      for (let i = 0; i < this.children.length; i++) {
+        const node = this.children[i];
+        node.top = acumuTop;
+        node.updateChildrenTopsRecursively();
+
+        if (i < this.children.length - 1) {
+          const next = this.children[i + 1];
+          acumuTop += node.totalHeight / 2 + next.totalHeight / 2 + node.height / 2 - next.height / 2;
+          acumuTop += vMargin;
+        }
+      }
     }
   }
 }
