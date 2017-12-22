@@ -44,6 +44,17 @@ export class Node {
     return this.top + this.height;
   }
 
+  static fromSpecObject(specObject: any) {
+    const node = new Node(specObject.content, ...(specObject.children || []).map(child => Node.fromSpecObject(child)));
+    node.updateAllRecursively();
+    return node;
+  }
+
+  static fromSpecString(spec: string) {
+    const specObject = JSON.parse(spec);
+    return Node.fromSpecObject(specObject);
+  }
+
   constructor(content: string, ...children: Node[]) {
     this.content = content;
     this.children = [];
@@ -52,6 +63,17 @@ export class Node {
     this.id = getBase62ShortID(8);
     this.linkId = this.id + '-link';
     this.textId = this.id + '-text';
+  }
+
+  toSpecObject() {
+    return {
+      content: this.content,
+      children: this.children.length ? this.children.map(node => node.toSpecObject()) : undefined
+    }
+  }
+
+  toSpecString() {
+    return JSON.stringify(this.toSpecObject());
   }
 
   toDebugString() {
@@ -160,6 +182,18 @@ export class Node {
 
 export class MindMap {
   root: Node;
+
+  static fromSpecString(spec: string) {
+    return new MindMap(Node.fromSpecString(spec));
+  }
+
+  constructor(root: Node) {
+    this.root = root;
+  }
+
+  toSpecString() {
+    return this.root.toSpecString();
+  }
 
   toSvgString() {
     let content = '';

@@ -14,21 +14,16 @@ export class AppComponent implements AfterViewInit {
     const comp = new Rating({ name: 'test', rating: 3 });
     comp.renderTo('#comp-test');
 
-    const root = new Node('Root',
-      new Node('Children 1',
-        new Node('Children 4'),
-        new Node('Children 5')),
-      new Node('Children 2'),
-      new Node('Children 3'));
+    const root = Node.fromSpecString('{"content":"Root","children":[{"content":"Children 1","children":[{"content":"Children 4"},{"content":"Children 5"}]},{"content":"Children 2"},{"content":"Children 3"}]}');
 
     root.updateAllRecursively();
 
     root.walk((node: Node) => console.log(node.toDebugString()));
 
-    const map = new MindMap();
-    map.root = root;
+    const map = new MindMap(root);
 
     console.log(map.toSvgString());
+    console.log(map.toSpecString());
 
   }
 }
