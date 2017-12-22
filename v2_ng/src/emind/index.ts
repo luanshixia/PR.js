@@ -5,6 +5,8 @@ export const vMargin = 10;
 export const cornerRadius = 5;
 export const cpOffset = 50;
 export const mapPadding = 100;
+export const textHeight = 15;
+export const nodePadding = 10;
 
 export const nodeClass = 'emind-node';
 export const linkClass = 'emind-link';
@@ -66,7 +68,7 @@ export class Node {
       link = `<path id="${this.linkId}" class="${linkClass}" d="M${x0} ${y0} C ${x1} ${y1}, ${x2} ${y2}, ${x} ${y}" stroke="black" fill="transparent" />`;
     }
 
-    return `<rect id="${this.id}" class="${nodeClass}" x="${this.left}" y="${this.top}" width="${this.width}" height="${this.height}" rx="${cornerRadius}" ry="${cornerRadius}" stroke="black" fill="transparent" /><text id="${this.textId}" class="${textClass}" x="${this.left}" y="${this.top}" text-anchor="left">${this.content}</text>${link}`;
+    return `<rect id="${this.id}" class="${nodeClass}" x="${this.left}" y="${this.top}" width="${this.width}" height="${this.height}" rx="${cornerRadius}" ry="${cornerRadius}" stroke="black" fill="transparent" /><text id="${this.textId}" class="${textClass}" x="${this.left + nodePadding}" y="${this.top + this.height / 2 + textHeight / 2}" text-anchor="left" font-size="${textHeight}">${this.content}</text>${link}`;
   }
 
   isRoot() {
