@@ -19,7 +19,7 @@ export interface IHtmlOptions {
   renderMode?: TagRenderMode;
 }
 
-export type IClassNames = string | string[] | { [key: string]: boolean }
+export type IClassNames = string | string[] | { [key: string]: boolean };
 
 export class Literal implements IComp {
   parent: IComp;
@@ -94,14 +94,14 @@ export class Comp<T> implements IComp {
 
   init() {
     this.tagName = 'div';
-    this.attributes = {}
+    this.attributes = {};
     this.classNames = [];
     this.children = [];
     this.registrations = [];
   }
 
   _toHtml() {
-    const _attr = (attr: Object) => Object.keys(attr)
+    const _attr = (attr: any) => Object.keys(attr)
       .filter(key => attr[key] !== undefined)
       .map(key => attr[key] !== null ? `${key}="${attr[key]}"` : key)
       .join(' ');
@@ -273,7 +273,7 @@ export class If extends BuiltinComp<{ if: boolean, then: IComp, else: IComp }> {
   }
 }
 
-export class For<T> extends BuiltinComp<{ data: T[], mapper: (T) => IComp }> {
+export class For<T> extends BuiltinComp<{ data: T[], mapper: (item: T) => IComp }> {
   init() {
     super.init();
     this.attributes['comp-for'] = null;
@@ -281,7 +281,7 @@ export class For<T> extends BuiltinComp<{ data: T[], mapper: (T) => IComp }> {
   }
 }
 
-export class Select<T> extends BuiltinComp<{ data: T[], name: string, labelMapper: (T) => string, valueMapper: (T) => string, useRadio: boolean }> {
+export class Select<T> extends BuiltinComp<{ data: T[], name: string, labelMapper: (item: T) => string, valueMapper: (item: T) => string, useRadio: boolean }> {
   init() {
     super.init();
     if (this.options.useRadio) {
@@ -342,7 +342,7 @@ export class Rating extends UserComp<{ name: string, rating: number }> {
       ...[0, 1, 2, 3, 4].map(i =>
         span({ [dataValue]: i + 1 }, ['rating-star'], this.options.rating > i ? symbol1 : symbol0))
     ).register('click', e => {
-      const rating = parseInt((<Element>e.target).getAttribute(dataValue))
+      const rating = parseInt((e.target as Element).getAttribute(dataValue));
       this.update({ rating });
     });
   }

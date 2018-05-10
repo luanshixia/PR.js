@@ -69,7 +69,7 @@ export class Node {
     return {
       content: this.content,
       children: this.children.length ? this.children.map(node => node.toSpecObject()) : undefined
-    }
+    };
   }
 
   toSpecString() {
@@ -106,9 +106,9 @@ export class Node {
     this.children.push(node);
   }
 
-  walk(action: (Node) => void) {
+  walk(action: (any: Node) => void) {
     action(this);
-    this.children.forEach(node => node.walk(action))
+    this.children.forEach(node => node.walk(action));
   }
 
   updateWidth() {
